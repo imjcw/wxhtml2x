@@ -1,0 +1,10 @@
+{
+  "name": "imjcw/wkhtmltox",
+  "description": "html2pdf",
+  "require": {
+    "php": "^7.4",
+    "knplabs/knp-snappy": "^1.2",
+    "h4cc/wkhtmltopdf-amd64": "^0.12.4",
+    "h4cc/wkhtmltoimage-amd64": "^0.12.4"
+  }
+}
