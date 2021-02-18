@@ -3,8 +3,8 @@
 
 include_once './vendor/autoload.php';
 
-define('WKHTMLTOPDF', __DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
-define('WKHTMLTOIMAGE', __DIR__ . '/vendor/bin/wkhtmltoimage-amd64');
+define('WKHTMLTOPDF', '/usr/bin/wkhtmltopdf');
+define('WKHTMLTOIMAGE', '/usr/bin/wkhtmltoimage');
 
 $http = new \Swoole\Http\Server('0.0.0.0', 80);
 
@@ -24,7 +24,7 @@ $http->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Respo
                 $snappy = new \Knp\Snappy\Pdf(WKHTMLTOPDF);
                 $response->header('Content-Type', 'application/pdf');
             } else {
-                $snappy = new \Knp\Snappy\Image(WKHTMLTOIMAGE);
+                $snappy = new \Knp\Snappy\Pdf(WKHTMLTOIMAGE);
                 $response->header('Content-Type', 'image/jpeg');
             }
             $response->end($snappy->getOutputFromHtml($content));
@@ -34,7 +34,7 @@ $http->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Respo
         }
     } else {
         $response->status(404);
-            $response->end(str_replace('__ERROR__', $t->getMessage(), '<!DOCTYPE html><html><head><title>404 Not Found</title></head><body><h1>404 Not Found</h1><p>__ERROR__</p></body></html>'));
+        $response->end('<!DOCTYPE html><html><head><title>404 Not Found</title></head><body><h1>404 Not Found</h1></body></html>');
     }
 });
 
