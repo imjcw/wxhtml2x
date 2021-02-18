@@ -1,6 +1,7 @@
 FROM php:7.4.13-fpm-alpine
 
 COPY ./wkhtml2x.php /var/www/html
+COPY ./composer.json /var/www/html
 COPY ./supervisor.d /etc/supervisor.d
 
 RUN set -e; \
