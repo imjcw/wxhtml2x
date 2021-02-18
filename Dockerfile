@@ -9,7 +9,7 @@ RUN set -e; \
 # Install build dependency packages
     apk update; \
     apk add --no-cache tzdata supervisor; \
-    apk add --virtual .phpize-deps-configure $PHPIZE_DEPS ca-certificates fontconfig freetype-dev libstdc++ libpng-dev libjpeg-turbo-dev libwebp-dev libx11-dev libxext-dev libxrender-dev libzip-dev openssl wkhtmltopdf; \
+    apk add --no-cache ca-certificates fontconfig freetype-dev libstdc++ libpng-dev libjpeg-turbo-dev libwebp-dev libx11-dev libxext-dev libxrender-dev libzip-dev openssl wkhtmltopdf; \
 # Setup timezone
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime; \
     echo "Asia/Shanghai" > /etc/timezone; \
