@@ -1,8 +1,0 @@
-{
-  "name": "imjcw/wkhtmltox",
-  "description": "html2pdf",
-  "require": {
-    "php": "^7.4",
-    "knplabs/knp-snappy": "^1.2"
-  }
-}

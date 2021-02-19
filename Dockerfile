@@ -1,33 +1,32 @@
 FROM php:7.4.13-fpm-alpine
 
-COPY ./wkhtml2x.php /var/www/html
-COPY ./composer.json /var/www/html
+COPY ./src /var/www/html
+COPY ./source /var/www/html/source
 COPY ./supervisor.d /etc/supervisor.d
 
 RUN set -e; \
+    sed -i 's!http://dl-cdn.alpinelinux.org!'https://mirrors.aliyun.com'!g' /etc/apk/repositories; \
     sed -i 's!https://dl-cdn.alpinelinux.org!'https://mirrors.aliyun.com'!g' /etc/apk/repositories; \
 # Install build dependency packages
     apk update; \
     apk add --no-cache tzdata supervisor; \
-    apk add --no-cache ca-certificates fontconfig freetype-dev libstdc++ libpng-dev libjpeg-turbo-dev libwebp-dev libx11-dev libxext-dev libxrender-dev libzip-dev openssl wkhtmltopdf; \
+    apk add --no-cache ca-certificates fontconfig freetype libgcc libstdc++ libx11 glib libxrender libxext libintl libzip openssl ttf-dejavu ttf-droid ttf-freefont ttf-liberation ttf-ubuntu-font-family; \
+    apk add --virtual .phpize-deps-configure $PHPIZE_DEPS; \
 # Setup timezone
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime; \
     echo "Asia/Shanghai" > /etc/timezone; \
 # PECL Extensions
     pecl install swoole; \
     docker-php-ext-enable swoole; \
-
-# PHP Extensions
-    docker-php-ext-install -j$(nproc) opcache zip bcmath; \
     docker-php-source delete; \
 # Install run dependency packages
-    runDeps="$( \
-        scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
-        | tr ',' '\n' \
-        | sort -u \
-        | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
-    )"; \
-    apk add --virtual .php-rundeps $runDeps; \
+    # runDeps="$( \
+    #     scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
+    #     | tr ',' '\n' \
+    #     | sort -u \
+    #     | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+    # )"; \
+    # apk add --virtual .php-rundeps $runDeps; \
 # Cleanup
     rm -rf /tmp/pear; \
     rm -rf /var/cache/apk/*; \
@@ -59,6 +58,10 @@ RUN set -e; \
     composer --version; \
     cd /var/www/html; \
     composer install --no-dev; \
+    mv source/SourceHanSansCN-Normal.otf /usr/share/fonts/SourceHanSansCN-Normal.otf; \
+    mv source/wkhtmltopdf /usr/bin/wkhtmltopdf; \
+    chmod 655 /usr/bin/wkhtmltopdf; \
+    # mv wkhtmltoimage /usr/bin/wkhtmltoimage; \
     mkdir /var/log/wkhtml2x; \
     sed -i '3a/usr/bin/supervisord -c /etc/supervisord.conf' /usr/local/bin/docker-php-entrypoint; \
     sed -i '4a' /usr/local/bin/docker-php-entrypoint;
