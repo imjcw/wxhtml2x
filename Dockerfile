@@ -10,7 +10,7 @@ RUN set -e; \
 # Install build dependency packages
     apk update; \
     apk add --no-cache tzdata supervisor; \
-    apk add --no-cache ca-certificates fontconfig freetype libgcc libstdc++ libx11 glib libxrender libxext libintl libzip openssl ttf-dejavu ttf-droid ttf-freefont ttf-liberation ttf-ubuntu-font-family; \
+    apk add --no-cache ca-certificates fontconfig libgcc libstdc++ libx11 glib libxrender libxext libintl ttf-dejavu ttf-droid ttf-freefont ttf-liberation ttf-ubuntu-font-family; \
     apk add --virtual .phpize-deps-configure $PHPIZE_DEPS; \
 # Setup timezone
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime; \
